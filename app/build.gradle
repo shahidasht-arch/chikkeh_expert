@@ -1,0 +1,34 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'ir.chikkeh.expert'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "ir.chikkeh.expert"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('../signing.keystore')
+            storePassword 'lybpjzSsYbX4'
+            keyAlias 'Chikkeh'
+            keyPassword 'lybpjzSsYbX4'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
+}
