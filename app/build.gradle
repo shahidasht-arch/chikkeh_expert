@@ -14,10 +14,13 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('../signing.keystore')
-            storePassword 'lybpjzSsYbX4'
-            keyAlias 'Chikkeh'
-            keyPassword 'lybpjzSsYbX4'
+            def keystorePath = System.getenv("STORE_FILE")
+            if (keystorePath != null) {
+                storeFile file(keystorePath)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
         }
     }
 
