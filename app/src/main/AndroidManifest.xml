@@ -1,4 +1,8 @@
-<application
-    android:label="Chikkeh Expert">
-</application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ir.chikkeh.expert">
 
+    <application
+        android:label="Chikkeh Expert">
+    </application>
+
+</manifest>
