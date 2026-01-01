@@ -1,8 +1,34 @@
-signingConfigs {
-    release {
-        storeFile file(System.getenv("STORE_FILE") ?: "chikkeh-release.keystore")
-        storePassword System.getenv("KEYSTORE_PASSWORD")
-        keyAlias "chikkeh"
-        keyPassword System.getenv("KEY_PASSWORD")
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'ir.chikkeh.expert'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "ir.chikkeh.expert"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
     }
+
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("STORE_FILE") ?: "chikkeh-release.keystore")
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias "chikkeh"   // ✅ فقط این خط Hardcode شده
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.5.0'
 }
