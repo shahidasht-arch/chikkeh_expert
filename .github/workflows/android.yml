@@ -19,15 +19,15 @@ jobs:
           java-version: 17
 
       - name: Decode keystore
-  shell: bash
-  run: |
-    echo "Writing keystore to: app/${{ secrets.STORE_FILE }}"
-    echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/${{ secrets.STORE_FILE }}
-    ls -la app/
+        shell: bash
+        run: |
+          echo "Writing keystore to app/${{ secrets.STORE_FILE }}"
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/${{ secrets.STORE_FILE }}
+          ls -la app/
 
       - name: Build AAB
         env:
-          STORE_FILE: chikkeh-release.keystore
+          STORE_FILE: ${{ secrets.STORE_FILE }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
