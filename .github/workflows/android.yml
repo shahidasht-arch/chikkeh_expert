@@ -1,4 +1,4 @@
-name: Build Android Release
+name: Build Android
 
 on:
   workflow_dispatch:
@@ -8,10 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -21,7 +20,7 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/signing.keystore
 
-      - name: Grant gradlew permission
+      - name: Grant gradlew execute permission
         run: chmod +x gradlew
 
       - name: Build Release APK
@@ -30,9 +29,6 @@ jobs:
           KEY_ALIAS: chikkeh
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew assembleRelease
-
-      - name: List APKs
-        run: find app/build/outputs/apk -type f
 
       - name: Verify APK
         run: |
