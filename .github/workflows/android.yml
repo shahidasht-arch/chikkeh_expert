@@ -1,4 +1,4 @@
-name: Build Android (APK + AAB)
+name: Build Signed Release APK
 
 on:
   push:
@@ -22,20 +22,35 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      # ✅ Decode Keystore
       - name: Decode release keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/signing.keystore
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      # ✅ Build Signed Release APK (VersionCode auto)
+      - name: Build Release APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew assembleRelease -PVERSION_CODE=${{ github.run_number }}
 
-      - name: Upload Debug APK
+      # ✅ ZipAlign
+      - name: ZipAlign APK
+        run: |
+          ZIPALIGN=$ANDROID_HOME/build-tools/34.0.0/zipalign
+          $ZIPALIGN -v 4 \
+          app/build/outputs/apk/release/*.apk \
+          app-release-aligned.apk
+
+      # ✅ Verify APK Signature
+      - name: Verify APK
+        run: |
+          APKSIGNER=$ANDROID_HOME/build-tools/34.0.0/apksigner
+          $APKSIGNER verify app-release-aligned.apk
+
+      # ✅ Upload Final APK
+      - name: Upload Signed Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/*.apk
-
-      - name: Upload Release AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-aab
-          path: app/build/outputs/bundle/release/*.aab
+          name: chikkeh-release-apk
+          path: app-release-aligned.apk
