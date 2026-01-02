@@ -17,22 +17,21 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Decode release keystore
+      - name: Decode keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/signing.keystore
 
-      - name: Grant execute permission for gradlew
+      - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Build Release APK
+      - name: Build Release
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_ALIAS: chikkeh
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          VERSION_CODE: ${{ github.run_number }}
         run: ./gradlew assembleRelease
 
-      - name: Verify APK signature
+      - name: Verify signature
         run: |
           APK=app/build/outputs/apk/release/app-release.apk
           $ANDROID_HOME/build-tools/34.0.0/apksigner verify --verbose $APK
